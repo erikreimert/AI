@@ -6,13 +6,18 @@ class limit:
     heurFlag : False
     aStarF : False
     bflag : False
+    hillPrint : False
+    beamPrint : False
     def __init__(self):
-        self.count = 1
+        self.count = 2
         self.uniFlag = False
         self.flag = False
         self.heurFlag = False
         self.aStarF = False
         self.bflag = False
+        self.heurPrint = False
+        self.hillPrint = False
+        self.beamPrint = False
     def increase(self):
         self.count+=1
     def check(self, status):
@@ -36,6 +41,18 @@ class limit:
             self.bflag = True
         else:
             self.bflag = False
+        if status is SearchEnum.GREEDY_SEARCH:
+            self.heurPrint = True
+        else:
+            self.heurPrint = False
+        if status is SearchEnum.HILL_CLIMBING:
+            self.hillPrint = True
+        else:
+            self.hillPrint = False
+        if status is SearchEnum.BEAM_SEARCH:
+            self.beamPrint = True
+        else:
+            self.beamPrint = False
 
 
     def setcount(self, x):
@@ -46,5 +63,10 @@ class limit:
         self.heurFlag = False
         self.aStarF = False
         self.bflag = False
+        self.heurPrint = False
+        self.hillPrint = False
+        self.beamPrint = False
+
+
     def skip(self):
         self.skipper = True

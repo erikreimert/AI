@@ -36,7 +36,7 @@ def General_Search(problem, searchMethod):
         ##########################
         #Checks when opened_nodes is [] which means its the end of the map and adds next node to queue on ITERATIVE_DEEPENING_SEARCH
         if lim.flag or lim.bflag:
-            while len(opened_nodes) is 0:
+            while len(opened_nodes) == 0:
                 node = Remove_Front(queue)
                 opened_nodes = Expand(node,problem)
                 printer(node, queue, initial, lim)
@@ -61,7 +61,7 @@ def printer(pnode, pqueue, pinitial, plim):
         pLocal = nodeConvert(x)
         pQ.append(pLocal)
     if plim.flag and expanded is pinitial.name:
-        lc = plim.count - 1
+        lc = plim.count - 2
         print("\nL=", lc, "   ",expanded,"\t\t",pQ)
     elif plim.uniFlag:
         NumQueue = [pnode] + pqueue
@@ -71,7 +71,23 @@ def printer(pnode, pqueue, pinitial, plim):
             pQ[c] = vals + pQ[c]
             c+=1
         print("\t",expanded,"\t\t",pQ)
-    elif plim.heurFlag:
+    elif plim.heurPrint:
+        NumQueue = [pnode] + pqueue
+        for x in NumQueue:
+            vals = heur(x)
+            vals = [str(vals)]
+            pQ[c] = vals + pQ[c]
+            c+=1
+        print("\t",expanded,"\t\t",pQ)
+    elif plim.hillPrint:
+        NumQueue = [pnode] + pqueue
+        for x in NumQueue:
+            vals = heur(x)
+            vals = [str(vals)]
+            pQ[c] = vals + pQ[c]
+            c+=1
+        print("\t",expanded,"\t\t",pQ)
+    elif plim.beamPrint:
         NumQueue = [pnode] + pqueue
         for x in NumQueue:
             vals = heur(x)
@@ -232,20 +248,17 @@ def expand_queue(queue, nodesToAddToQueue, problem, searchMethod, lim):
         return queue
 
     elif searchMethod == SearchEnum.ITERATIVE_DEEPENING_SEARCH:
-        if queue is []:
-            return nodesToAddToQueue
-        # for x in nodesToAddToQueue:
-        #     print(nodeConvert(x))
+        iterations = []
         for x in nodesToAddToQueue:
-            if len(x) <= lim.count:
-                return nodesToAddToQueue + queue
-            # else:
-            #     queue = nodesToAddToQueue + queue
-            #     Remove_Front(queue)
-            #     return queue
-        lim.increase()
-        #TODO issue is that whenever a child is opened that doesnt end but is larger than lim.count the program loops to a new depth
-        return Make_Queue(Make_Queue_Node(problem.getState('S')))
+            if len(x) < lim.count:
+                iterations+=[x]
+        queue = iterations + queue
+        if queue == []:
+            lim.increase()
+            print(lim.count)
+            return Make_Queue(Make_Queue_Node(problem.getState('S')))
+        else:
+            return queue
 
     elif searchMethod == SearchEnum.UNIFORM_COST_SEARCH:
         queue = nodesToAddToQueue + queue
@@ -287,7 +300,7 @@ def expand_queue(queue, nodesToAddToQueue, problem, searchMethod, lim):
     elif searchMethod == SearchEnum.BEAM_SEARCH:
         queue+=nodesToAddToQueue
         queue = infoSort(queue, lim)
-        return queue[:2]
+        return queue[:3] #TODO doesnt sort by heuristic, oopsie
 
 def main(filename):
     """
