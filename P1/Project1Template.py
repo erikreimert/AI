@@ -17,38 +17,78 @@ def General_Search(problem, searchMethod):
     print("\n\tExpanded\tQueue")
     initialState = 'S' # name of the initial state
     finalState = 'G' # Name of the final state
+    initial = problem.getState(initialState)
     solution = problem.getState(finalState)
     lim = limit()
+    lim.check(searchMethod)
 
     # Make_Queue, Make_Queue_Node, Remove_Front, Terminal_State, Expand, and expand_queue are to be implemented by the student.
     # Implementation of the below pseudocode may vary slightly depending on the data structures used.
 
-    queue = Make_Queue(Make_Queue_Node(problem.getState(initialState))) # Initialize the data structures to start the search at initialState
+    queue = Make_Queue(Make_Queue_Node(initial)) # Initialize the data structures to start the search at initialState
     while len(queue) > 0:
         node = Remove_Front(queue) # Remove and return the node to expand from the queue
+        printer(node, queue, initial, lim)
         if node[0] is solution: # solution is not a defined variable, but this statement represents checking whether you have expanded the goal node.
+            lim.falseFlag()
             return node # If this is a solution, return the node containing the path to reach it.
-        printer(node, queue)
         opened_nodes = Expand(node,problem) # Get new nodes to add to the queue based on the expanded node.
+        ##########################
+        #Checks when opened_nodes is [] which means its the end of the map and adds next node to queue on ITERATIVE_DEEPENING_SEARCH
+        if lim.flag or lim.bflag:
+            while len(opened_nodes) is 0:
+                node = Remove_Front(queue)
+                opened_nodes = Expand(node,problem)
+                printer(node, queue, initial, lim)
+        #########################
+
         queue = expand_queue(queue,opened_nodes,problem,searchMethod, lim)
     return False
 
+#tool for printing out nodes and for debugging
 def nodeConvert(node):
     pNode = []
+    # print(node)
     for x in node:
         pNode.append(x.name)
     return pNode
-def printer(node, queue):
-    expanded = node[0].name
-    pNode = nodeConvert(node)
+def printer(pnode, pqueue, pinitial, plim):
+    expanded = pnode[0].name
+    pNode = nodeConvert(pnode)
     pQ = [pNode]
-    for x in queue:
-        pLocal = []
-        for y in x:
-            name = y.name
-            pLocal.append(name)
+    c = 0
+    for x in pqueue:
+        pLocal = nodeConvert(x)
         pQ.append(pLocal)
-    print("\t",expanded,"\t\t",pQ)
+    if plim.flag and expanded is pinitial.name:
+        lc = plim.count - 1
+        print("\nL=", lc, "   ",expanded,"\t\t",pQ)
+    elif plim.uniFlag:
+        NumQueue = [pnode] + pqueue
+        for x in NumQueue:
+            vals = cost(x)
+            vals = [str(vals)]
+            pQ[c] = vals + pQ[c]
+            c+=1
+        print("\t",expanded,"\t\t",pQ)
+    elif plim.heurFlag:
+        NumQueue = [pnode] + pqueue
+        for x in NumQueue:
+            vals = heur(x)
+            vals = [str(vals)]
+            pQ[c] = vals + pQ[c]
+            c+=1
+        print("\t",expanded,"\t\t",pQ)
+    elif plim.aStarF:
+        NumQueue = [pnode] + pqueue
+        for x in NumQueue:
+            vals = aStarisBorn(x)
+            vals = [str(vals)]
+            pQ[c] = vals + pQ[c]
+            c+=1
+        print("\t",expanded,"\t\t",pQ)
+    else:
+        print("\t",expanded,"\t\t",pQ)
 def Make_Queue(node):
     return [node]
 
@@ -67,9 +107,101 @@ def Expand(node, problem):
         that = problem.getState(x)
         if (not (that in node)):
             that = Make_Queue_Node(that)
-            that = that + node
+            that+= node
             explore.append(that)
     return explore
+
+#the father of all sorts
+def infoSort(queue, lim):
+
+    #daddys spoiled little brat
+    queue, values = childSort(queue, lim)
+    repeats = []
+    for x in range(len(values)-1):
+        if values[x] is values[x+1]:
+            repeats+=[x]
+    if len(repeats) > 0:
+        for x in range(len(repeats)-1):
+            if queue[x][0] is not queue[x+1][0]:
+                hold = [queue[x]] + [queue[x+1]]
+                check = []
+                check2 = []
+                for y in hold:
+                    a = nodeConvert(y)
+                    check+=[a]
+                    check2+=[a]
+                    check.sort()
+                    if check is not check2:
+                        hold = queue[x]
+                        queue[x] = queue[x+1]
+                        queue[x+1] = hold
+                continue
+                if len(queue[x]) < len(queue[x+1]):
+                    hold = queue[x]
+                    queue[x] = queue[x+1]
+                    queue[x+1] = hold
+                    continue
+                elif len(queue[x]) == len(queue[x+1]):
+                    hold = [queue[x]] + [queue[x+1]]
+                    check = []
+                    check2 = []
+                    for y in hold:
+                        a = nodeConvert(y)
+                        check+=[a]
+                        check2+=[a]
+                        check.sort()
+                    if check is not check2:
+                        hold = queue[x]
+                        queue[x] = queue[x+1]
+                        queue[x+1] = hold
+    return queue
+
+#gets a node and returns the cost of its path
+def cost(node):
+    vals = 0
+    for y in range(len(node)-1):
+        vals+= node[y].edges.get(node[y+1].name)
+    return vals
+
+#gets the heuristic of something
+def heur(node):
+    vals = node[0].heuristic
+    return vals
+
+#can you tell my sanity is dwindling with this assignment??
+def aStarisBorn(node):
+    hvals = heur(node)
+    cvals = cost(node)
+    fvals = hvals + cvals
+    return fvals
+
+#returns array of cost for every node in queue
+#first gets the value of the path of every node, then copies it and sorts it. Uses the sorted list to get the index num in which the queue should be and orders the list as such
+def childSort(queue, lim):
+    values = []
+    copy = []
+    queueCpy = []
+    for x in queue:
+        queueCpy+=[1]
+        if lim.uniFlag:
+            vals = cost(x)
+        if lim.heurFlag:
+            vals = heur(x)
+        if lim.aStarF:
+            vals = aStarisBorn(x)
+        values.append(vals)
+        copy.append(vals)
+    copy.sort()
+    for x in range(len(copy)):
+        index = copy.index(values[x])
+        queueCpy[index] = queue[x]
+    if 1 in queueCpy:
+        queueCpy.remove(1)
+    if 1 in queueCpy:
+        queueCpy.remove(1)
+    return queueCpy, copy
+
+
 
 def expand_queue(queue, nodesToAddToQueue, problem, searchMethod, lim):
     """
@@ -89,60 +221,73 @@ def expand_queue(queue, nodesToAddToQueue, problem, searchMethod, lim):
 
 #Fill in the below if and elif bodies to implement how the respective searches add new nodes to the queue.
     if searchMethod == SearchEnum.DEPTH_FIRST_SEARCH:
-        if (queue is []):
-            queue = nodesToAddToQueue
-        else:
-            queue = nodesToAddToQueue + queue
-        return queue
+        return nodesToAddToQueue + queue
 
     elif searchMethod == SearchEnum.BREADTH_FIRST_SEARCH:
-        if (queue is []):
-            queue = nodesToAddToQueue
-        else:
-            queue = queue + nodesToAddToQueue
-        return queue
+        return queue + nodesToAddToQueue
 
     elif searchMethod == SearchEnum.DEPTH_LIMITED_SEARCH:
-        if (queue is []):
-            queue = nodesToAddToQueue
-        elif len(nodesToAddToQueue[0]) < 4:
+        if len(nodesToAddToQueue[0]) < 4:
             queue = nodesToAddToQueue + queue
-        else:
-            queue = queue
-
         return queue
 
     elif searchMethod == SearchEnum.ITERATIVE_DEEPENING_SEARCH:
-        if (lim.count == 2):
-            queue = Make_Queue(Make_Queue_Node(problem.getState('S')))
-            lim.setcount()
-        elif (queue is []):
-            queue = nodesToAddToQueue
-        else:
-            print(lim.count - 1)
-            # print(nodesToAddToQueue)
-            if len(nodesToAddToQueue[0]) < lim.count:
-                print("here")
-                queue = nodesToAddToQueue + queue
-            elif(queue == []):
-                lim.setcount()
-                queue = Make_Queue(Make_Queue_Node(problem.getState('S')))
-                print("here2")
-            else:
-                print('putamadre')
-                queue = queue
+        if queue is []:
+            return nodesToAddToQueue
+        # for x in nodesToAddToQueue:
+        #     print(nodeConvert(x))
+        for x in nodesToAddToQueue:
+            if len(x) <= lim.count:
+                return nodesToAddToQueue + queue
+            # else:
+            #     queue = nodesToAddToQueue + queue
+            #     Remove_Front(queue)
+            #     return queue
+        lim.increase()
+        #TODO issue is that whenever a child is opened that doesnt end but is larger than lim.count the program loops to a new depth
+        return Make_Queue(Make_Queue_Node(problem.getState('S')))
 
+    elif searchMethod == SearchEnum.UNIFORM_COST_SEARCH:
+        queue = nodesToAddToQueue + queue
+
+        ##############################
+        #I openned the pdf on the wrong page and added the dynamic programming upgrades unknowingly, can i get extra credit for this?
+        #remove redundant paths
+        # for x in range(len(queue)-1):
+        #     if queue[x][0] == queue[x+1][0]:
+        #         if cost(queue[x]) < cost(queue[x+1]):
+        #             queue.remove(queue[x+1])
+        #         else:
+        #             queue.remove(queue[x])
+        queue = infoSort(queue, lim)  #TODO this shit is broken
         return queue
 
-    # elif searchMethod == SearchEnum.UNIFORM_COST_SEARCH:
+    elif searchMethod == SearchEnum.GREEDY_SEARCH:
+        queue = nodesToAddToQueue + queue
+        queue = infoSort(queue, lim)
+        return queue
+    elif searchMethod == SearchEnum.A_STAR:
+        queue = nodesToAddToQueue + queue
 
-    # elif searchMethod == SearchEnum.GREEDY_SEARCH:
+        # for x in range(len(queue)-1):
+        #     if queue[x][0] == queue[x+1][0]:
+        #         if aStarisBorn(queue[x]) < aStarisBorn(queue[x+1]):
+        #             queue.remove(queue[x+1])
+        #         else:
+        #             queue.remove(queue[x])
 
-    # elif searchMethod == SearchEnum.A_STAR:
+        queue = infoSort(queue, lim)
+        return queue
 
-    # elif searchMethod == SearchEnum.HILL_CLIMBING:
+    elif searchMethod == SearchEnum.HILL_CLIMBING:
+        queue = nodesToAddToQueue + queue
+        queue = infoSort(queue, lim)
+        return [queue[0]]
 
-    # elif searchMethod == SearchEnum.BEAM_SEARCH:-
+    elif searchMethod == SearchEnum.BEAM_SEARCH:
+        queue+=nodesToAddToQueue
+        queue = infoSort(queue, lim)
+        return queue[:2]
 
 def main(filename):
     """
