@@ -3,6 +3,7 @@ import Graph, sys
 from limit import limit
 from collections import OrderedDict
 # Template for Project 1 of CS 4341 - A2020
+explored = []
 def General_Search(problem, searchMethod):
     """
     Return the solution path or failure to reach state G from state S.
@@ -21,37 +22,42 @@ def General_Search(problem, searchMethod):
     solution = problem.getState(finalState)
     lim = limit()
     lim.check(searchMethod)
-
     # Make_Queue, Make_Queue_Node, Remove_Front, Terminal_State, Expand, and expand_queue are to be implemented by the student.
     # Implementation of the below pseudocode may vary slightly depending on the data structures used.
 
     queue = Make_Queue(Make_Queue_Node(initial)) # Initialize the data structures to start the search at initialState
+    global explored
+    explored = []
     while len(queue) > 0:
         node = Remove_Front(queue) # Remove and return the node to expand from the queue
+        print('\nExplored = ', nodeConvert(explored), '\n')
         printer(node, queue, initial, lim)
         if node[0] is solution: # solution is not a defined variable, but this statement represents checking whether you have expanded the goal node.
             lim.falseFlag()
             return node # If this is a solution, return the node containing the path to reach it.
-        opened_nodes = Expand(node,problem) # Get new nodes to add to the queue based on the expanded node.
+        opened_nodes = Expand(node,problem, lim) # Get new nodes to add to the queue based on the expanded node.
+        explored = [node[0]] + explored
+
         ##########################
         #Checks when opened_nodes is [] which means its the end of the map and adds next node to queue on ITERATIVE_DEEPENING_SEARCH
-        if lim.flag or lim.bflag:
+        if lim.flag or lim.bflag or SearchEnum.DEPTH_FIRST_SEARCH:
             while len(opened_nodes) == 0:
                 node = Remove_Front(queue)
-                opened_nodes = Expand(node,problem)
+                opened_nodes = Expand(node,problem, lim)
                 printer(node, queue, initial, lim)
         #########################
-
+        opened_nodes = checkEx(opened_nodes, explored, queue, lim)
         queue = expand_queue(queue,opened_nodes,problem,searchMethod, lim)
     return False
 
-#tool for printing out nodes and for debugging
+#tool for printing out individual nodes and for debugging
 def nodeConvert(node):
     pNode = []
-    # print(node)
     for x in node:
         pNode.append(x.name)
     return pNode
+
+#prints stuff
 def printer(pnode, pqueue, pinitial, plim):
     expanded = pnode[0].name
     pNode = nodeConvert(pnode)
@@ -105,6 +111,7 @@ def printer(pnode, pqueue, pinitial, plim):
         print("\t",expanded,"\t\t",pQ)
     else:
         print("\t",expanded,"\t\t",pQ)
+
 def Make_Queue(node):
     return [node]
 
@@ -116,7 +123,7 @@ def Remove_Front(queue):
     queue.remove(this)
     return this
 
-def Expand(node, problem):
+def Expand(node, problem, lim):
     this = node[0].edges.keys()
     explore = []
     for x in this:
@@ -125,13 +132,54 @@ def Expand(node, problem):
             that = Make_Queue_Node(that)
             that+= node
             explore.append(that)
+    if lim.alpha:
+        explore = alphaSort(explore)
     return explore
 
+#checks if the opened nodes exist in the explored list
+def checkEx(node, explored, queue, lim):
+    for x in range(len(node)):
+        if node[x][0] not in explored:
+            if x < len(node)-1:
+                continue
+            else:
+                return node
+        else:
+            node.remove(node[x])
+            if x < len(node)-1:
+                continue
+            else:
+                return node
+def alphaSort(newNodes):
+    nodes = []
+    ncopy = []
+    qcpy = []
+    for x in newNodes:
+        qcpy+=[1]
+        nodes.append(nodeConvert(x))
+        ncopy.append(nodeConvert(x))
+    ncopy.sort()
+    # print(nodes)
+    # print(ncopy)
+    for x in range(len(ncopy)):
+        index = ncopy.index(nodes[x])
+        qcpy[index] = newNodes[x]
+    onec = 0
+    for x in qcpy:
+        if x == 1:
+            onec+=1
+    for x in range(onec):
+        qcpy.remove(1)
+    return qcpy
 #the father of all sorts
 def infoSort(queue, lim):
 
-    #daddys spoiled little brat
-    queue, values = childSort(queue, lim)
+    if lim.bflag:
+        #pew pew
+        queue, values = laserBeam(queue)
+    else:
+        #daddys spoiled little brat
+        queue, values = childSort(queue, lim)
     repeats = []
     for x in range(len(values)-1):
         if values[x] is values[x+1]:
@@ -171,35 +219,33 @@ def infoSort(queue, lim):
                         queue[x] = queue[x+1]
                         queue[x+1] = hold
     return queue
-
 #gets a node and returns the cost of its path
 def cost(node):
     vals = 0
     for y in range(len(node)-1):
         vals+= node[y].edges.get(node[y+1].name)
     return vals
-
 #gets the heuristic of something
 def heur(node):
     vals = node[0].heuristic
     return vals
-
 #can you tell my sanity is dwindling with this assignment??
 def aStarisBorn(node):
     hvals = heur(node)
     cvals = cost(node)
     fvals = hvals + cvals
     return fvals
-
 #returns array of cost for every node in queue
 #first gets the value of the path of every node, then copies it and sorts it. Uses the sorted list to get the index num in which the queue should be and orders the list as such
 def childSort(queue, lim):
     values = []
     copy = []
     queueCpy = []
+
     for x in queue:
         queueCpy+=[1]
         if lim.uniFlag:
+            lim.heurFlag = False #TODO odd error
             vals = cost(x)
         if lim.heurFlag:
             vals = heur(x)
@@ -211,13 +257,39 @@ def childSort(queue, lim):
     for x in range(len(copy)):
         index = copy.index(values[x])
         queueCpy[index] = queue[x]
-    if 1 in queueCpy:
+    onec = 0
+    for x in queueCpy:
+        if x == 1:
+            onec+=1
+    for x in range(onec):
         queueCpy.remove(1)
-    if 1 in queueCpy:
-        queueCpy.remove(1)
+
     return queueCpy, copy
 
-
+#wilhelm scream
+def laserBeam(queue):
+    values = []
+    smoll = [[]]
+    for x in queue:
+        vals = heur(x)
+        values.append(vals)
+    smallest = values[0]
+    smaller = None
+    for x in values[1:]:
+        if x < smallest:
+            smaller = smallest
+            smallest = x
+        elif smaller == None or smaller > x:
+            smaller = x
+    if values.index(smallest) < values.index(smaller):
+        smoll.append(queue[values.index(smallest)])
+        smoll.append(queue[values.index(smaller)])
+        beamedVals = [smallest, smaller]
+    else:
+        smoll.append(queue[values.index(smaller)])
+        smoll.append(queue[values.index(smallest)])
+        beamedVals = [smaller, smallest]
+    return smoll[1:], beamedVals
 
 def expand_queue(queue, nodesToAddToQueue, problem, searchMethod, lim):
     """
@@ -243,8 +315,9 @@ def expand_queue(queue, nodesToAddToQueue, problem, searchMethod, lim):
         return queue + nodesToAddToQueue
 
     elif searchMethod == SearchEnum.DEPTH_LIMITED_SEARCH:
-        if len(nodesToAddToQueue[0]) < 4:
-            queue = nodesToAddToQueue + queue
+        if len(nodesToAddToQueue) > 0 :
+            if len(nodesToAddToQueue[0]) < 4:
+                queue = nodesToAddToQueue + queue
         return queue
 
     elif searchMethod == SearchEnum.ITERATIVE_DEEPENING_SEARCH:
@@ -254,57 +327,97 @@ def expand_queue(queue, nodesToAddToQueue, problem, searchMethod, lim):
                 iterations+=[x]
         queue = iterations + queue
         if queue == []:
+            global explored
+            explored = []
             lim.increase()
-            print(lim.count)
             return Make_Queue(Make_Queue_Node(problem.getState('S')))
         else:
             return queue
 
     elif searchMethod == SearchEnum.UNIFORM_COST_SEARCH:
         queue = nodesToAddToQueue + queue
-
-        ##############################
-        #I openned the pdf on the wrong page and added the dynamic programming upgrades unknowingly, can i get extra credit for this?
-        #remove redundant paths
-        # for x in range(len(queue)-1):
-        #     if queue[x][0] == queue[x+1][0]:
-        #         if cost(queue[x]) < cost(queue[x+1]):
-        #             queue.remove(queue[x+1])
-        #         else:
-        #             queue.remove(queue[x])
-        queue = infoSort(queue, lim)  #TODO this shit is broken
+        print(len(queue))
+        removeq = []
+        for x in range(len(queue)-1):
+            if queue[x][0] == queue[x+1][0]:
+                if cost(queue[x]) < cost(queue[x+1]):
+                    removeq.append(queue[x+1])
+                else:
+                    removeq.append(queue[x])
+        for x in removeq:
+            queue.remove(x)
+        queue = infoSort(queue, lim)
         return queue
 
     elif searchMethod == SearchEnum.GREEDY_SEARCH:
         queue = nodesToAddToQueue + queue
+        removeq = []
+        for x in range(len(queue)-1):
+            if queue[x][0] == queue[x+1][0]:
+                if heur(queue[x]) < heur(queue[x+1]):
+                    removeq.append(queue[x+1])
+                else:
+                    removeq.append(queue[x])
+        for x in removeq:
+            queue.remove(x)
         queue = infoSort(queue, lim)
         return queue
     elif searchMethod == SearchEnum.A_STAR:
         queue = nodesToAddToQueue + queue
-
-        # for x in range(len(queue)-1):
-        #     if queue[x][0] == queue[x+1][0]:
-        #         if aStarisBorn(queue[x]) < aStarisBorn(queue[x+1]):
-        #             queue.remove(queue[x+1])
-        #         else:
-        #             queue.remove(queue[x])
-
+        removeq = []
+        for x in range(len(queue)-1):
+            if queue[x][0] == queue[x+1][0]:
+                if aStarisBorn(queue[x]) < aStarisBorn(queue[x+1]):
+                    removeq.append(queue[x+1])
+                else:
+                    removeq.append(queue[x])
+        for x in removeq:
+            queue.remove(x)
         queue = infoSort(queue, lim)
         return queue
 
     elif searchMethod == SearchEnum.HILL_CLIMBING:
         queue = nodesToAddToQueue + queue
+        removeq = []
+        for x in range(len(queue)-1):
+            if queue[x][0] == queue[x+1][0]:
+                if heur(queue[x]) < heur(queue[x+1]):
+                    removeq.append(queue[x+1])
+                else:
+                    removeq.append(queue[x])
+        for x in removeq:
+            queue.remove(x)
         queue = infoSort(queue, lim)
         return [queue[0]]
 
     elif searchMethod == SearchEnum.BEAM_SEARCH:
+        if queue == []:
+            return nodesToAddToQueue
         queue+=nodesToAddToQueue
-        queue = infoSort(queue, lim)
-        return queue[:3] #TODO doesnt sort by heuristic, oopsie
+        c = 0
+        if len(queue) >= 3:
+            for x in range(len(queue)-1):
+                c+=1
+                if len(queue[x]) is not len(queue[x+1]):
+                    return queue
+                elif c == (len(queue) - 1):
+                    removeq = []
+                    for x in range(len(queue)-1):
+                        if queue[x][0] == queue[x+1][0]:
+                            if heur(queue[x]) < heur(queue[x+1]):
+                                removeq.append(queue[x+1])
+                            else:
+                                removeq.append(queue[x])
+                    for x in removeq:
+                        queue.remove(x)
+                    queue = infoSort(queue, lim)
+                    return queue
+        return queue
+
 
 def main(filename):
     """
-    Entry point for this progrlam. Parses the input and then runs each search on the parsed graph.
+    Entry point for this program. Parses the input and then runs each search on the parsed graph.
 
     Parameters
     ----------

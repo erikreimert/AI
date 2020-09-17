@@ -50,21 +50,6 @@ def nodeConvert(node):
     for x in node:
         pNode.append(x.name)
     return pNode
-def beamPrint(pnode, pqueue): ## TODO: delete
-    expanded = pnode[0].name
-    pQ = []
-    c = 0
-    NumQueue = pqueue
-    for x in pqueue:
-        pLocal = nodeConvert(x)
-        pQ.append(pLocal)
-    for x in NumQueue:
-        vals = heur(x)
-        vals = [str(vals)]
-        # holds = vals + pqueue[c]
-        pQ[c] = vals + pQ[c]
-        c+=1
-    print("\t",expanded,"\t\t",pQ)
 def printer(pnode, pqueue, pinitial, plim):
     expanded = pnode[0].name
     pNode = nodeConvert(pnode)
@@ -138,7 +123,6 @@ def Expand(node, problem, lim):
     if lim.alpha:
         explore = alphaSort(explore)
     return explore
-
 def alphaSort(newNodes):
     nodes = []
     ncopy = []
@@ -303,8 +287,9 @@ def expand_queue(queue, nodesToAddToQueue, problem, searchMethod, lim):
         return queue + nodesToAddToQueue
 
     elif searchMethod == SearchEnum.DEPTH_LIMITED_SEARCH:
-        if len(nodesToAddToQueue[0]) < 4:
-            queue = nodesToAddToQueue + queue
+        if len(nodesToAddToQueue) > 0:
+            if len(nodesToAddToQueue[0]) <= 3:
+                queue = nodesToAddToQueue + queue
         return queue
 
     elif searchMethod == SearchEnum.ITERATIVE_DEEPENING_SEARCH:
@@ -339,14 +324,6 @@ def expand_queue(queue, nodesToAddToQueue, problem, searchMethod, lim):
         return queue
     elif searchMethod == SearchEnum.A_STAR:
         queue = nodesToAddToQueue + queue
-
-        # for x in range(len(queue)-1):
-        #     if queue[x][0] == queue[x+1][0]:
-        #         if aStarisBorn(queue[x]) < aStarisBorn(queue[x+1]):
-        #             queue.remove(queue[x+1])
-        #         else:
-        #             queue.remove(queue[x])
-
         queue = infoSort(queue, lim)
         return queue
 
@@ -363,13 +340,12 @@ def expand_queue(queue, nodesToAddToQueue, problem, searchMethod, lim):
         if len(queue) >= 3:
             for x in range(len(queue)-1):
                 c+=1
-                if len(queue[x]) is len(queue[x+1]):
-                    if c == (len(queue) - 1):
-                        queue = infoSort(queue, lim)
-                        return queue
-                else:
+                if len(queue[x]) is not len(queue[x+1]):
                     return queue
-
+                elif c == (len(queue) - 1):
+                    queue = infoSort(queue, lim)
+                    return queue
+        return queue
 
 
 def main(filename):

@@ -1,0 +1,372 @@
+Depth 1st search
+
+        Expanded        Queue
+
+Explored =  []
+
+         S               [['S']]
+
+Explored =  ['S']
+
+         A               [['A', 'S'], ['T', 'S'], ['Z', 'S']]
+
+Explored =  ['A', 'S']
+
+         F               [['F', 'A', 'S'], ['O', 'A', 'S'], ['R', 'A', 'S'], ['T', 'S'], ['Z', 'S']]
+
+Explored =  ['F', 'A', 'S']
+
+         G               [['G', 'F', 'A', 'S'], ['O', 'A', 'S'], ['R', 'A', 'S'], ['T', 'S'], ['Z', 'S']]
+        goal reached!
+
+Solution found:  ['S', 'A', 'F', 'G']
+
+Breadth 1st search
+
+        Expanded        Queue
+
+Explored =  []
+
+         S               [['S']]
+
+Explored =  ['S']
+
+         A               [['A', 'S'], ['T', 'S'], ['Z', 'S']]
+
+Explored =  ['A', 'S']
+
+         T               [['T', 'S'], ['Z', 'S'], ['F', 'A', 'S'], ['O', 'A', 'S'], ['R', 'A', 'S']]
+
+Explored =  ['T', 'A', 'S']
+
+         Z               [['Z', 'S'], ['F', 'A', 'S'], ['O', 'A', 'S'], ['R', 'A', 'S'], ['L', 'T', 'S']]
+
+Explored =  ['Z', 'T', 'A', 'S']
+
+         F               [['F', 'A', 'S'], ['O', 'A', 'S'], ['R', 'A', 'S'], ['L', 'T', 'S'], ['O', 'Z', 'S']]
+
+Explored =  ['F', 'Z', 'T', 'A', 'S']
+
+         O               [['O', 'A', 'S'], ['R', 'A', 'S'], ['L', 'T', 'S'], ['O', 'Z', 'S'], ['G', 'F', 'A', 'S']]
+
+Explored =  ['O', 'F', 'Z', 'T', 'A', 'S']
+
+         R               [['R', 'A', 'S'], ['L', 'T', 'S'], ['O', 'Z', 'S'], ['G', 'F', 'A', 'S']]
+
+Explored =  ['R', 'O', 'F', 'Z', 'T', 'A', 'S']
+
+         L               [['L', 'T', 'S'], ['O', 'Z', 'S'], ['G', 'F', 'A', 'S'], ['C', 'R', 'A', 'S'], ['P', 'R', 'A', 'S']]
+
+Explored =  ['L', 'R', 'O', 'F', 'Z', 'T', 'A', 'S']
+
+         O               [['O', 'Z', 'S'], ['G', 'F', 'A', 'S'], ['C', 'R', 'A', 'S'], ['P', 'R', 'A', 'S'], ['M', 'L', 'T', 'S']]
+
+Explored =  ['O', 'L', 'R', 'O', 'F', 'Z', 'T', 'A', 'S']
+
+         G               [['G', 'F', 'A', 'S'], ['C', 'R', 'A', 'S'], ['P', 'R', 'A', 'S'], ['M', 'L', 'T', 'S']]
+        goal reached!
+
+Solution found:  ['S', 'A', 'F', 'G']
+
+Depth-limited search (depth-limit = 2)
+
+        Expanded        Queue
+
+Explored =  []
+
+         S               [['S']]
+
+Explored =  ['S']
+
+         A               [['A', 'S'], ['T', 'S'], ['Z', 'S']]
+
+Explored =  ['A', 'S']
+
+         F               [['F', 'A', 'S'], ['O', 'A', 'S'], ['R', 'A', 'S'], ['T', 'S'], ['Z', 'S']]
+
+Explored =  ['F', 'A', 'S']
+
+         O               [['O', 'A', 'S'], ['R', 'A', 'S'], ['T', 'S'], ['Z', 'S']]
+
+Explored =  ['O', 'F', 'A', 'S']
+
+         R               [['R', 'A', 'S'], ['T', 'S'], ['Z', 'S']]
+
+Explored =  ['R', 'O', 'F', 'A', 'S']
+
+         T               [['T', 'S'], ['Z', 'S']]
+
+Explored =  ['T', 'R', 'O', 'F', 'A', 'S']
+
+         L               [['L', 'T', 'S'], ['Z', 'S']]
+
+Explored =  ['L', 'T', 'R', 'O', 'F', 'A', 'S']
+
+         Z               [['Z', 'S']]
+failure to find path between S and G
+Iterative deepening search
+
+        Expanded        Queue
+
+Explored =  []
+
+
+L= 0     S               [['S']]
+
+Explored =  []
+
+
+L= 1     S               [['S']]
+
+Explored =  ['S']
+
+         A               [['A', 'S'], ['T', 'S'], ['Z', 'S']]
+
+Explored =  ['A', 'S']
+
+         T               [['T', 'S'], ['Z', 'S']]
+
+Explored =  ['T', 'A', 'S']
+
+         Z               [['Z', 'S']]
+
+Explored =  []
+
+
+L= 2     S               [['S']]
+
+Explored =  ['S']
+
+         A               [['A', 'S'], ['T', 'S'], ['Z', 'S']]
+
+Explored =  ['A', 'S']
+
+         F               [['F', 'A', 'S'], ['O', 'A', 'S'], ['R', 'A', 'S'], ['T', 'S'], ['Z', 'S']]
+
+Explored =  ['F', 'A', 'S']
+
+         O               [['O', 'A', 'S'], ['R', 'A', 'S'], ['T', 'S'], ['Z', 'S']]
+
+Explored =  ['O', 'F', 'A', 'S']
+
+         R               [['R', 'A', 'S'], ['T', 'S'], ['Z', 'S']]
+
+Explored =  ['R', 'O', 'F', 'A', 'S']
+
+         T               [['T', 'S'], ['Z', 'S']]
+
+Explored =  ['T', 'R', 'O', 'F', 'A', 'S']
+
+         L               [['L', 'T', 'S'], ['Z', 'S']]
+
+Explored =  ['L', 'T', 'R', 'O', 'F', 'A', 'S']
+
+         Z               [['Z', 'S']]
+
+Explored =  []
+
+
+L= 3     S               [['S']]
+
+Explored =  ['S']
+
+         A               [['A', 'S'], ['T', 'S'], ['Z', 'S']]
+
+Explored =  ['A', 'S']
+
+         F               [['F', 'A', 'S'], ['O', 'A', 'S'], ['R', 'A', 'S'], ['T', 'S'], ['Z', 'S']]
+
+Explored =  ['F', 'A', 'S']
+
+         G               [['G', 'F', 'A', 'S'], ['O', 'A', 'S'], ['R', 'A', 'S'], ['T', 'S'], ['Z', 'S']]
+        goal reached!
+
+Solution found:  ['S', 'A', 'F', 'G']
+
+Uniform Search (Branch-and-bound)
+
+        Expanded        Queue
+
+Explored =  []
+
+         S               [['0', 'S']]
+3
+
+Explored =  ['S']
+
+         Z               [['75.0', 'Z', 'S'], ['118.0', 'T', 'S'], ['140.0', 'A', 'S']]
+3
+
+Explored =  ['Z', 'S']
+
+         T               [['118.0', 'T', 'S'], ['140.0', 'A', 'S'], ['146.0', 'O', 'Z', 'S']]
+3
+
+Explored =  ['T', 'Z', 'S']
+
+         A               [['140.0', 'A', 'S'], ['146.0', 'O', 'Z', 'S'], ['229.0', 'L', 'T', 'S']]
+5
+
+Explored =  ['A', 'T', 'Z', 'S']
+
+         O               [['146.0', 'O', 'Z', 'S'], ['220.0', 'R', 'A', 'S'], ['229.0', 'L', 'T', 'S'], ['239.0', 'F', 'A', 'S'], ['291.0', 'O', 'A', 'S']]
+4
+
+Explored =  ['O', 'A', 'T', 'Z', 'S']
+
+         R               [['220.0', 'R', 'A', 'S'], ['229.0', 'L', 'T', 'S'], ['239.0', 'F', 'A', 'S'], ['291.0', 'O', 'A', 'S']]
+5
+
+Explored =  ['R', 'O', 'A', 'T', 'Z', 'S']
+
+         L               [['229.0', 'L', 'T', 'S'], ['239.0', 'F', 'A', 'S'], ['291.0', 'O', 'A', 'S'], ['317.0', 'P', 'R', 'A', 'S'], ['366.0', 'C', 'R', 'A', 'S']]
+5
+
+Explored =  ['L', 'R', 'O', 'A', 'T', 'Z', 'S']
+
+         F               [['239.0', 'F', 'A', 'S'], ['291.0', 'O', 'A', 'S'], ['299.0', 'M', 'L', 'T', 'S'], ['317.0', 'P', 'R', 'A', 'S'], ['366.0', 'C', 'R', 'A', 'S']]
+5
+
+Explored =  ['F', 'L', 'R', 'O', 'A', 'T', 'Z', 'S']
+
+         O               [['291.0', 'O', 'A', 'S'], ['299.0', 'M', 'L', 'T', 'S'], ['317.0', 'P', 'R', 'A', 'S'], ['366.0', 'C', 'R', 'A', 'S'], ['450.0', 'G', 'F', 'A', 'S']]
+4
+
+Explored =  ['O', 'F', 'L', 'R', 'O', 'A', 'T', 'Z', 'S']
+
+         M               [['299.0', 'M', 'L', 'T', 'S'], ['317.0', 'P', 'R', 'A', 'S'], ['366.0', 'C', 'R', 'A', 'S'], ['450.0', 'G', 'F', 'A', 'S']]
+4
+
+Explored =  ['M', 'O', 'F', 'L', 'R', 'O', 'A', 'T', 'Z', 'S']
+
+         P               [['317.0', 'P', 'R', 'A', 'S'], ['366.0', 'C', 'R', 'A', 'S'], ['374.0', 'D', 'M', 'L', 'T', 'S'], ['450.0', 'G', 'F', 'A', 'S']]
+5
+
+Explored =  ['P', 'M', 'O', 'F', 'L', 'R', 'O', 'A', 'T', 'Z', 'S']
+
+         C               [['366.0', 'C', 'R', 'A', 'S'], ['374.0', 'D', 'M', 'L', 'T', 'S'], ['418.0', 'G', 'P', 'R', 'A', 'S'], ['450.0', 'G', 'F', 'A', 'S'], ['455.0', 'C', 'P', 'R', 'A', 'S']]
+5
+
+Explored =  ['C', 'P', 'M', 'O', 'F', 'L', 'R', 'O', 'A', 'T', 'Z', 'S']
+
+         D               [['374.0', 'D', 'M', 'L', 'T', 'S'], ['418.0', 'G', 'P', 'R', 'A', 'S'], ['455.0', 'C', 'P', 'R', 'A', 'S']]
+2
+
+Explored =  ['D', 'C', 'P', 'M', 'O', 'F', 'L', 'R', 'O', 'A', 'T', 'Z', 'S']
+
+         G               [['418.0', 'G', 'P', 'R', 'A', 'S'], ['455.0', 'C', 'P', 'R', 'A', 'S']]
+        goal reached!
+
+Solution found:  ['S', 'A', 'R', 'P', 'G']
+
+Greedy Search
+
+        Expanded        Queue
+
+Explored =  []
+
+         S               [['366.0', 'S']]
+
+Explored =  ['S']
+
+         A               [['253.0', 'A', 'S'], ['329.0', 'T', 'S'], ['374.0', 'Z', 'S']]
+
+Explored =  ['A', 'S']
+
+         F               [['178.0', 'F', 'A', 'S'], ['193.0', 'R', 'A', 'S'], ['329.0', 'T', 'S'], ['374.0', 'Z', 'S'], ['380.0', 'O', 'A', 'S']]
+
+Explored =  ['F', 'A', 'S']
+
+         G               [['0', 'G', 'F', 'A', 'S'], ['193.0', 'R', 'A', 'S'], ['329.0', 'T', 'S'], ['374.0', 'Z', 'S'], ['380.0', 'O', 'A', 'S']]
+        goal reached!
+
+Solution found:  ['S', 'A', 'F', 'G']
+
+A*
+
+        Expanded        Queue
+
+Explored =  []
+
+         S               [['366.0', 'S']]
+
+Explored =  ['S']
+
+         A               [['393.0', 'A', 'S'], ['447.0', 'T', 'S'], ['449.0', 'Z', 'S']]
+
+Explored =  ['A', 'S']
+
+         R               [['413.0', 'R', 'A', 'S'], ['417.0', 'F', 'A', 'S'], ['447.0', 'T', 'S'], ['449.0', 'Z', 'S'], ['671.0', 'O', 'A', 'S']]
+
+Explored =  ['R', 'A', 'S']
+
+         P               [['415.0', 'P', 'R', 'A', 'S'], ['417.0', 'F', 'A', 'S'], ['447.0', 'T', 'S'], ['449.0', 'Z', 'S'], ['526.0', 'C', 'R', 'A', 'S'], ['671.0', 'O', 'A', 'S']]
+
+Explored =  ['P', 'R', 'A', 'S']
+
+         F               [['417.0', 'F', 'A', 'S'], ['418.0', 'G', 'P', 'R', 'A', 'S'], ['447.0', 'T', 'S'], ['449.0', 'Z', 'S'], ['526.0', 'C', 'R', 'A', 'S'], ['615.0', 'C', 'P', 'R', 'A', 'S'], ['671.0', 'O', 'A', 'S']]
+
+Explored =  ['F', 'P', 'R', 'A', 'S']
+
+         G               [['418.0', 'G', 'P', 'R', 'A', 'S'], ['447.0', 'T', 'S'], ['449.0', 'Z', 'S'], ['526.0', 'C', 'R', 'A', 'S'], ['671.0', 'O', 'A', 'S']]
+        goal reached!
+
+Solution found:  ['S', 'A', 'R', 'P', 'G']
+
+Hill climbing without backtracking
+
+        Expanded        Queue
+
+Explored =  []
+
+         S               [['366.0', 'S']]
+
+Explored =  ['S']
+
+         A               [['253.0', 'A', 'S']]
+
+Explored =  ['A', 'S']
+
+         F               [['178.0', 'F', 'A', 'S']]
+
+Explored =  ['F', 'A', 'S']
+
+         G               [['0', 'G', 'F', 'A', 'S']]
+        goal reached!
+
+Solution found:  ['S', 'A', 'F', 'G']
+
+Beam search (w = 2)
+
+        Expanded        Queue
+
+Explored =  []
+
+         S               [['366.0', 'S']]
+
+Explored =  ['S']
+
+         A               [['253.0', 'A', 'S'], ['329.0', 'T', 'S'], ['374.0', 'Z', 'S']]
+
+Explored =  ['A', 'S']
+
+         T               [['329.0', 'T', 'S'], ['374.0', 'Z', 'S'], ['178.0', 'F', 'A', 'S'], ['380.0', 'O', 'A', 'S'], ['193.0', 'R', 'A', 'S']]
+
+Explored =  ['T', 'A', 'S']
+
+         Z               [['374.0', 'Z', 'S'], ['178.0', 'F', 'A', 'S'], ['380.0', 'O', 'A', 'S'], ['193.0', 'R', 'A', 'S'], ['244.0', 'L', 'T', 'S']]
+
+Explored =  ['Z', 'T', 'A', 'S']
+
+         F               [['178.0', 'F', 'A', 'S'], ['193.0', 'R', 'A', 'S']]
+
+Explored =  ['F', 'Z', 'T', 'A', 'S']
+
+         R               [['193.0', 'R', 'A', 'S'], ['0', 'G', 'F', 'A', 'S']]
+
+Explored =  ['R', 'F', 'Z', 'T', 'A', 'S']
+
+         G               [['0', 'G', 'F', 'A', 'S'], ['98.0', 'P', 'R', 'A', 'S']]
+        goal reached!
+
+Solution found:  ['S', 'A', 'F', 'G']
