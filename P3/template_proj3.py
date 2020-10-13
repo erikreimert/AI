@@ -15,7 +15,7 @@ encodedLabels = to_categorical(labels)
 
 #Data splitting
 x_train, x_test, y_train, y_test = train_test_split(numbers, encodedLabels, test_size=0.25, stratify = labels, random_state=1)
-x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=0.15, stratify = y_train, random_state=1)
+x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=0.1125, stratify = y_train, random_state=1)
 
 model = Sequential() # declare model
 model.add(Dense(10, input_shape=(28*28, ), kernel_initializer='he_normal')) # first layer
