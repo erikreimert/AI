@@ -42,10 +42,10 @@ model.add(Activation('tanh')) #best so far
 #
 #
 model.add(Dense(10, kernel_initializer='he_normal')) # last layer
-model.add(Activation('softmax'))
+# model.add(Activation('softmax'))
 # model.add(Activation('relu'))
 # model.add(Activation('selu'))
-# model.add(Activation('tanh')) #best so far
+model.add(Activation('tanh')) #best so far
 
 
 # Compile Model
