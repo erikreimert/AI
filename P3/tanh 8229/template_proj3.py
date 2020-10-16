@@ -127,9 +127,9 @@ print(confusion_matrix(y_test, hold))
 
 # For your best performing model:
 # Description of the model and the model training procedure: 10 pts
-# Training performance plot: 10 pts DONE
+# Training performance plot: 10 pts
 # Performance (accuracy, precision and recall) of your best performing model: 5 pts
-# Confusion matrix of your best performing model: 5 pts DONE
-# Visualization of three misclassified images: 10 pts DONE
+# Confusion matrix of your best performing model: 5 pts This is done
+# Visualization of three misclassified images: 10 pts
 #
-#Copy of best performing model DONE
+#Copy of best performing model
