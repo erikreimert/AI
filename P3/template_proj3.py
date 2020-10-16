@@ -26,7 +26,7 @@ y_train = to_categorical(y_train)
 y_val = to_categorical(y_val)
 
 model = Sequential() # declare model
-model.add(Dense(10, input_shape=(28*28, ), kernel_initializer='he_normal')) # first layer
+model.add(Dense(1000, input_shape=(28*28, ), kernel_initializer='he_normal')) # first layer
 
 #different initializations
 #different dense numbers f.e: 10
@@ -42,10 +42,10 @@ model.add(Activation('tanh')) #best so far
 #
 #
 model.add(Dense(10, kernel_initializer='he_normal')) # last layer
-# model.add(Activation('softmax'))
+model.add(Activation('softmax'))
 # model.add(Activation('relu'))
 # model.add(Activation('selu'))
-model.add(Activation('tanh')) #best so far
+# model.add(Activation('tanh')) #best so far
 
 
 # Compile Model
